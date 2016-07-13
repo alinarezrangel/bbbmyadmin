@@ -1,6 +1,6 @@
 # bbbmyadmin
 
-![Logo de bbbmyadmin](app/public/images/logo.svg)
+!(app/public/images/logo.svg)
 
 bbbmyadmin es un administrador de la plataforma BigBlueButton con soporte de salas,
 usuarios, roles y clases hecho en NodeJS.
