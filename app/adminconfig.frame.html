@@ -1,0 +1,104 @@
+<nav class="navigation color-ocean gradient-nav">
+	<a href="#server" class="tab-opener" data-open-tab="adminconfig.server">Servidor</a>
+	<a href="#sessions" class="tab-opener" data-open-tab="adminconfig.sessions">Sesiones</a>
+	<a href="#db" class="tab-opener" data-open-tab="adminconfig.database">Base de datos</a>
+	<a href="#bbb" class="tab-opener" data-open-tab="adminconfig.bbb">Big Blue Button</a>
+	<a href="/manageusers">Usuarios</a>
+</nav>
+<div class="width-block">
+	<section class="container no-margin padding-16 tab first" data-tab-name="adminconfig.server" id="server">
+		<a name="server"></a>
+		<form class="form" action="/config" method="post">
+			<label class="label text-color-aqua">Puerto donde ejecutarse:</label><br />
+			<input type="text" name="port" value="" class="input"/><br />
+			<p>
+				Es el puerto donde bbbmyadmin va a iniciarse. De manera predeterminada
+				es <b>4567</b>. Nota: no recomendamos utilizar puertos ya utilizados por otros
+				programas como el puerto 80 dado que puede crear un bloqueo. De cambiar el puerto,
+				no se veran cambios hasta el reinicio de bbbmyadmin.
+			</p>
+			<div class="button-group">
+				<input type="submit" name="submit" value="Guardar" class="input button width-block color-sky"/>
+				<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+			</div>
+		</form>
+	</section>
+	<section class="container no-margin padding-16 tab" data-tab-name="adminconfig.sessions" id="sessions">
+		<a name="sessions"></a>
+		<form class="form" action="/config" method="post">
+			<label class="label text-color-aqua">Secreto de la sesión:</label><br />
+			<input type="text" name="sessionsecret" value="" class="input"/><br />
+			<p>
+				El secreto de la sesión es una secuencia de caracteres alfanuméricos que se
+				utilizarán como llave para generar las ID de sesión. Recomendamos altamente
+				que no comparta este código y que sea lo más aleatorio posible. De manera
+				predeterminada es <b>454RR5E45R345FDES</b>.
+			</p>
+			<div class="button-group">
+				<input type="submit" name="submit" value="Guardar" class="input button width-block color-sky"/>
+				<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+			</div>
+		</form>
+	</section>
+	<section class="container no-margin padding-16 tab" data-tab-name="adminconfig.database" id="db">
+		<a name="db"></a>
+		<form class="form" action="/config" method="post">
+			<label class="label text-color-aqua">Nombre de la base de datos:</label><br />
+			<input type="text" name="dbname" value="" class="input"/><br />
+			<p>
+				El nombre de la base de datos de bbbmyadmin. De manera predeterminada es
+				<b>bbbmyadmin</b>.
+			</p>
+			<label class="label text-color-aqua">Nombre del usuario de la base de datos:</label><br />
+			<input type="text" name="dbuser" value="" class="input"/><br />
+			<p>
+				El nombre del usuario de la base de datos que utilizara bbbmyadmin. Debe
+				poder seleccionar, insertar y actualizar las tablas. De manera predeterminada
+				es <b>bbbmyadmin</b>.
+			</p>
+			<label class="label text-color-aqua">Contraseña de la base de datos:</label><br />
+			<input type="password" name="dbpassword" value="" class="input"/><br />
+			<p>
+				Contraseña del usuario de la base de datos. De manera predeterminada, es
+				<b>a123b456</b>.
+			</p>
+			<label class="label text-color-aqua">Host de la base de datos:</label><br />
+			<input type="text" name="dbhost" value="" class="input"/><br />
+			<p>
+				Host donde se ubica la base de datos. De manera predeterminada es
+				<b>http://localhost/</b>.
+			</p>
+			<div class="button-group">
+				<input type="submit" name="submit" value="Guardar" class="input button width-block color-sky"/>
+				<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+			</div>
+		</form>
+	</section>
+	<section class="container no-margin padding-16 tab" data-tab-name="adminconfig.bbb" id="bbb">
+		<a name="bbb"></a>
+		<form class="form" action="/config" method="post">
+			<label class="label text-color-aqua">Secreto de Big Blue Button:</label><br />
+			<input type="text" name="bbbsecret" value="" class="input"/><br />
+			<p>
+				Secreto de Big Blue Button, puedes obtenerlo con el comando
+				<code>bbb-conf --secret</code>. Es realmente importante
+				que <strong>nunca compartas esta clave</strong>, de lo contrario
+				podrian acceder totalmente al sistema. No posee valor predeterminado,
+				debe fijarse antes de utilizar el sistema.
+			</p>
+			<label class="label text-color-aqua">Ruta de Big Blue Button:</label><br />
+			<input type="text" name="bbbhost" value="" class="input"/><br />
+			<p>
+				Host donde esta Big Blue Button, no solo especifique el host, sino también la ruta
+				a la API: su tu Big Blue Button esta en <code>http://www.example.com/bigbluebutton/</code>,
+				entonces este campo debe tener el valor <code>http://www.example.com/bigbluebutton/api/</code>.
+				<strong>No olvide agregar una barra al final</strong>. Su valor predeterminado es
+				<b>http://localhost/bigbluebutton/api/</b>.
+			</p>
+			<div class="button-group">
+				<input type="submit" name="submit" value="Guardar" class="input button width-block color-sky"/>
+				<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+			</div>
+		</form>
+	</section>
+</div>

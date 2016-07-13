@@ -1,0 +1,54 @@
+<form class="form container" action="/manageusers" method="POST">
+	<input type="text" name="username" value="%USERNAME%" class="hidden" hidden="hidden" readonly="readonly"/>
+	<h2>Cambiar el usuario %USERNAME%</h2>
+	<label class="label text-color-aqua">Cambiar nombre</label><br />
+	<input type="text" name="name" value="" class="input"/><br />
+	<p>
+		Indique el nuevo nombre del usuario (no su apodo) o deje vacio
+		para no cambiar.
+	</p>
+	<label class="label text-color-aqua">Cambiar apellidos</label><br />
+	<input type="text" name="lastname" value="" class="input"/><br />
+	<p>
+		Indique el nuevo apellido del usuario o deje vacio para no
+		cambiar.
+	</p>
+	<label class="label text-color-aqua">Cambiar apodo</label><br />
+	<input type="text" name="nickname" value="" class="input"/><br />
+	<p>
+		Indique el nuevo apodo del usuario (username) o deje vacio para
+		no cambiar.
+	</p>
+	<label class="label text-color-aqua">Cambiar contraseña</label><br />
+	<input type="password" name="password" value="" class="input"/><br />
+	<p>
+		Indique la nueva contraseña del usuario, o deje vacio para no
+		cambiar.
+	</p>
+	<label class="label text-color-aqua">Cambiar correo electronico</label><br />
+	<input type="text" name="email" value="" class="input"/><br />
+	<p>
+		Indique el nuevo correo electronico del usuario, o deje vacio para no
+		cambiar.
+	</p>
+	<label class="label text-color-aqua">Cambiar cedula de identidad</label><br />
+	<input type="text" name="ci" value="" class="input"/><br />
+	<p>
+		Indique la nueva cedula del usuario, o deje vacio para no
+		cambiar.
+	</p>
+	<label class="label text-color-aqua">Cancelar usuario (Si)</label><br />
+	<input type="radio" name="cancel" value="yes" class="input"/><br />
+	<label class="label text-color-aqua">Cancelar usuario (No)</label><br />
+	<input type="radio" name="cancel" value="no" class="input" checked="checked"/><br />
+	<p>
+		Active o desactive el boton para cancelar al usuario. Cuando se cancela un
+		usuarios, se le elimina el permiso <code>+i</code> prohibiendo que ingrese
+		al sistema hasta que se le active.
+	</p>
+	<div class="button-group">
+		<input type="submit" name="submit" value="Guardar" class="input button width-block color-sky"/>
+		<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+	</div>
+	<input hidden="hidden" readonly="readonly" type="text" name="action" value="handle"/><br />
+</form>

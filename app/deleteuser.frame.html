@@ -1,0 +1,20 @@
+<header class="container padding-16 color-dark-red">
+	<a class="close-button" href="/manageusers">Volver</a>
+	<h2>Borrar usuario</h2>
+</header>
+<section class="container padding-16">
+	<p>
+		¿Estas seguro de esto? esta acción no se puede revertir. Si lo que deseas es
+		inhabilitar al usuario, hay mejores formas de hacerlo (ver la
+		<a href="help/handling-users.html">ayuda de usuarios</a>).
+	</p>
+	<form class="form box border color-white" action="/manageusers" method="POST">
+		<label class="label text-color-aqua">Nombre de usuario (apodo) del usuario a borrar</label><br />
+		<input type="text" class="input" name="nickname" value=""/><br />
+		<div class="button-group">
+			<input type="submit" name="submit" value="Borrar" class="input button width-block color-red border border-color-dark-red bs-2"/>
+			<input type="reset" name="reset" value="Cancelar" class="input button width-block color-white border border-color-black bs-2"/>
+		</div>
+		<input hidden="hidden" readonly="readonly" type="hidden" name="action" value="delete"/>
+	</form>
+</section>

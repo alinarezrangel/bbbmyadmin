@@ -1,0 +1,34 @@
+{
+  "name": "bbbmyadmin",
+  "version": "0.0.1",
+  "description": "A BigBlueButton Administrator",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "bbb",
+    "bigbluebutton",
+    "admin",
+    "generation"
+  ],
+  "author": "Alejandro Linarez Rangel",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.15.2",
+    "cluster": "^0.7.7",
+    "cookie-session": "^2.0.0-alpha.1",
+    "crypto": "0.0.3",
+    "express": "^4.14.0",
+    "fs": "0.0.2",
+    "ip": "^1.1.3",
+    "mysql": "^2.11.1",
+    "request": "^2.72.0",
+    "string": "^3.3.1",
+    "underscore": "^1.8.3",
+    "validator": "^5.4.0",
+    "xmldom": "^0.1.22"
+  }
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es_VEN">
+	<head>
+		<title>bbbmyadmin</title>
+		<meta charset="UTF-8">
+		<link href="generation/css/generation.css" rel="stylesheet"/>
+		<link href="generation/css/pallete_basics.css" rel="stylesheet"/>
+		<link href="hover.css" rel="stylesheet"/>
+		<link href="style.css" rel="stylesheet"/>
+		<script src="generation/js/generation.js" type="text/javascript"></script>
+		<script src="jquery.js" type="text/javascript"></script>
+		<!--<script src="/socket.io/socket.io.js" type="text/javascript"></script>-->
+		<script src="index.js" type="text/javascript"></script>
+	</head>
+	<body class="flexible direction-column total-height">
+		<nav class="navigation color-ocean gradient-nav">
+			<a href="#home" class="tab-opener" data-open-tab="home">Inicio</a>
+			<a href="#login" class="tab-opener" data-open-tab="login">Iniciar sesión</a>
+			<a href="#info" class="tab-opener" data-open-tab="join">Ingresar</a>
+			<a href="#warns" class="tab-opener" data-open-tab="warns">Privacidad, contenido y cookies</a>
+			<a href="#info" class="tab-opener" data-open-tab="info">Información adicional</a>
+			<a href="legal.html">Información legal</a>
+		</nav>
+		<main class="width-block f1">
+			<section class="container padding-16 no-margin tab first" data-tab-name="home" id="home">
+				<a name="home"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">bbbmyadmin</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						Bienvenido a bbbmyadmin, el administrador de
+						la plataforma BigBlueButton. Intenta con
+						<a href="#" class="tab-opener text-color-rusticred" data-open-tab="login">iniciar sesión</a>
+						para continuar.
+					</p>
+					<p class="error">
+					</p>
+					<noscript>
+						<div class="container margin-4 padding-4 border bs-2 border-color-evergreen color-sky">
+							<h3>Advertencia</h3>
+							<p>
+								Si puede ver este aviso, usted no posee JavaScript habilitado en su navegador,
+								para una mejor experiencia le pedimos que lo active antes de continuar.
+							</p>
+						</div>
+					</noscript>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="login" id="login">
+				<a name="login"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Iniciar sesión</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<span class="text-color-red error"></span><br />
+					<form class="form" action="/login" method="post">
+						<label to="username" class="label">Nombre de usuario:</label><br />
+						<input type="text" class="input" name="username" id="username" value=""/><br />
+						<label to="password" class="label">Tu contraseña:</label><br />
+						<input type="password" class="input" name="password" id="password" value=""/><br />
+						<div class="button-group">
+							<input type="submit" name="submit" value="Ingresar" class="input button width-block color-sky"/>
+							<input type="reset" name="submit" value="Reestablecer" class="input button width-block color-sky"/>
+						</div>
+					</form>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="warns" id="warns">
+				<a name="warns"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Privacidad y contenido</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<div class="container margin-8 padding-8 border bs-2 border-color-sand color-sky">
+						<h2>Servicio de cookies</h2>
+						<p>
+							bbbmyadmin utiliza cookies para almacenar información necesaria para el
+							correcto funcionamiento del sistema, al utilizar esta aplicación,
+							aceptas el uso de dichas cookies. Este mensaje solo se mostrara una vez
+							en esta pagina.
+						</p>
+					</div>
+					<div class="container margin-8 padding-8 border bs-2 border-color-sand color-sky">
+						<h2>Privacidad</h2>
+						<p>
+							bbbmyadmin puede intentar obtener algunos datos sobre usted y su dispositivo, como:
+						</p>
+						<ul class="list">
+							<li>IP: El IP de su dispositivo</li>
+							<li>Fecha: bbbmyadmin almacena las fechas de acceso de los usuarios al sistema</li>
+						</ul>
+						<p>
+							Entre otras informaciones.
+						</p>
+					</div>
+					<div class="container margin-8 padding-8 border bs-2 border-color-sand color-sky">
+						<h2>Contenido</h2>
+						<p>
+							bbbmyadmin no se hace responsable por el contenido en la página de
+							BigBlueButton a la que desea acceder.
+						</p>
+					</div>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="info" id="info">
+				<a name="info"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Información adicional</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						Página oficial de bbbmyadmin: <a href="http://github.com/alinarezrangel/bbbmyadmin">http://github.com/alinarezrangel/bbbmyadmin</a>
+						o <a href="http://bbbmyadmin.sourceforge.net/">http://bbbmyadmin.sourceforge.net/</a>
+					</p>
+					<p>
+						Ver la <a href="/help/index.html">ayuda <i>ad hoc</i></a>.
+					</p>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="join" id="join">
+				<a name="join"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Ingresar a una sala pública</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						El administrador del sistema pudo haber dejado salas públicas. Estas son de libre acceso,
+						solo necesitas llenar el formulario inferior:
+					</p>
+					<form action="/joinPublic" method="POST">
+						<label to="username" class="label">Tu nombre real:</label><br />
+						<input type="text" class="input" name="name" id="name" value=""/><br />
+						<label to="username" class="label">Tu nombre de usuario:</label><br />
+						<input type="text" class="input" name="username" id="username" value=""/><br />
+						<label to="username" class="label">Selecciona la sala a la cual quieres acceder:</label><br />
+						<input type="text" class="input" name="rname" id="rname" value="" list="rooms" /><br />
+						<datalist id="rooms">
+						</datalist>
+						<div class="button-group">
+							<input type="submit" name="submit" value="Ingresar" class="input button width-block color-sky"/>
+							<input type="reset" name="submit" value="Reestablecer" class="input button width-block color-sky"/>
+						</div>
+					</form>
+				</section>
+			</section>
+		</main>
+		<footer class="container color-everblack no-margin padding-16 footer">
+			Potenciado con bbbmyadmin v1.0.0 - by Alejandro Linarez Rangel. See the
+			project pages at <a href="http://github.com/alinarezrangel/bbbmyadmin">GitHub</a>
+			and <a href="http://bbbmyadmin.sourceforge.net/">SourceForge</a>.
+			This product uses BigBlueButton and is not endorsed or certified
+			by BigBlueButton Inc. BigBlueButton and the BigBlueButton Logo are
+			trademarks of BigBlueButton Inc. Para ver más información legal ingrese a
+			<a href="legal.html">Información Legal</a>.
+		</footer>
+		<script type="text/javascript">
+			/*window.addEventListener("load", function()
+			{
+				// First: get server host and
+				var socket = io.connect('http://localhost:4567');
+				socket.on("info", function(data)
+				{
+					$("#out").html(data);
+				});
+			});*/
+			window.addEventListener("load", function()
+			{
+				function makeOption(value, name)
+				{
+					return "<option value=\"" + value + "\">" + name + "</option>";
+				}
+				if(PARGS.errorCode != "")
+				{
+					$(".error").html("Error: " + ETABLE[parseInt(PARGS.errorCode)]);
+				}
+				if(PARGS.canceled == "1")
+				{
+					$(".error").html($(".error").html() + ", Tu usuario ha sido cancelado por un administrador");
+				}
+				$.get("/public?request=rooms", function(data)
+				{
+					var json = {};
+					try
+					{
+						json = JSON.parse(data);
+					}
+					catch(err)
+					{
+						return;
+					}
+					$("#rooms").html("");
+					for(var i = 0;i < json.rooms.length;i++)
+					{
+						var v = json.rooms[i].id;
+						var n = json.rooms[i].name;
+						$("#rooms").html($("#rooms").html() + makeOption(v, n));
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es_VEN">
+	<head>
+		<title>bbbmyadmin</title>
+		<meta charset="UTF-8">
+		<link href="generation/css/generation.css" rel="stylesheet"/>
+		<link href="generation/css/pallete_basics.css" rel="stylesheet"/>
+		<link href="hover.css" rel="stylesheet"/>
+		<link href="style.css" rel="stylesheet"/>
+		<script src="generation/js/generation.js" type="text/javascript"></script>
+		<script src="jquery.js" type="text/javascript"></script>
+		<!--<script src="/socket.io/socket.io.js" type="text/javascript"></script>-->
+		<script src="index.js" type="text/javascript"></script>
+	</head>
+	<body class="flexible direction-column total-height">
+		<nav class="navigation color-ocean gradient-nav">
+			<a href="/user">Inicio</a>
+			<a href="/user?startAtScreen=config#config">Configuración</a>
+			<a href="/user?startAtScreen=rooms#rooms">Salas</a>
+			<a href="#admin">Administrar salas</a>
+		</nav>
+		<main class="width-block f1">
+			<section class="container padding-16 no-margin first" id="admin">
+				<a name="admin"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Administrar salas</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<nav class="navigation color-ocean gradient-nav">
+						<a href="#new" class="tab-opener" data-open-tab="rooms.new">Crear sala</a>
+						<a href="#close" class="tab-opener" data-open-tab="rooms.close">Cerrar sala</a>
+					</nav>
+					<div class="width-block">
+						<span class="text-color-red" id="error"></span><br />
+						<section class="container padding-16 no-margin tab" data-tab-name="rooms.new" id="new">
+							<a name="new"></a>
+							<header class="flexible center">
+								<h1 class="text-jumbo-1">Crear una sala</h1>
+							</header>
+							<section class="container padding-16 no-margin">
+								<form action="/managerooms" method="POST">
+									<input type="hidden" hidden="hidden" readonly="readonly" name="action" value="new" />
+									<label class="label text-color-aqua">Nombre de la sala:</label><br />
+									<input class="input" type="text" name="name" value="" /><br />
+									<p>
+										El nombre de la sala a los usuarios, por ejemplo "Clase 32B" o
+										"Pronombres personales"
+									</p>
+									<label class="label text-color-aqua">Identificador de la sala:</label><br />
+									<input class="input" type="text" name="id" value="" /><br />
+									<p>
+										Identificador único de la sala, en minusculas sin espacios, guiones o caracteres
+										no alfanuméricos. Por ejemplo: "clase1" o "clase45"
+									</p>
+									<label class="label text-color-aqua">Contraseña de moderador:</label><br />
+									<input class="input" type="password" name="modpasswd" value="" /><br />
+									<p>
+										Contraseña de los moderadores, debe ser lo más segura posible dado que
+										no se procesará antes de ser enviada.
+									</p>
+									<label class="label text-color-aqua">Contraseña de usuario:</label><br />
+									<input class="input" type="password" name="userpasswd" value="" /><br />
+									<p>
+										Contraseña de los usuarios, debe ser lo más segura posible dado que no
+										se procesará anter de ser enviada.
+									</p>
+									<label class="label text-color-aqua">Fecha de inicio:</label><br />
+									<input class="input" type="text" name="starts" value="2016-01-01 00:00" /><br />
+									<p>
+										Fecha y hora de inicio de la clase, en el formato
+										<code>YYYY-MM-DD hh:mm</code> donde:
+									</p>
+									<ul>
+										<li>YYYY: es el año en 4 digitos</li>
+										<li>MM: es el mes en 2 digitos, siendo Enero el mes 01 y Diciembre el 12</li>
+										<li>DD: el día del mes en dos digitos, siendo el primer dia el 01.</li>
+										<li>hh: la hora de inicio en dos digitos, siendo 00 las 12AM y 23 las 11PM</li>
+										<li>mm: el minuto en dos digitos, siendo 00 el primer minuto y 59 el ultimo</li>
+									</ul>
+									<p>
+										Algunas fechas válidas son "2016-02-15 14:30" (15 de Febrero de 2016, 2:30PM),
+										"2016-09-20 08:05" (20 de Septiembre de 2016, 8:05AM).
+									</p>
+									<label class="label text-color-aqua">Fecha de cierre:</label><br />
+									<input class="input" type="text" name="ends" value="2016-01-01 00:00" /><br />
+									<p>
+										Estimación de la fecha y hora de cierre de la clase. En el mismo formato
+										de la fecha de inicio.
+									</p>
+									<label class="label text-color-aqua">Máxima fecha de entrada:</label><br />
+									<input class="input" type="text" name="maxs" value="2016-01-01 00:00" /><br />
+									<label class="label text-color-aqua">Permitida entrada despues de fecha:</label><br />
+									<input class="input" type="radio" name="maxenabled" value="false" checked="checked" /><br />
+									<label class="label text-color-aqua">Prohibida entrada despues de fecha:</label><br />
+									<input class="input" type="radio" name="maxenabled" value="true" /><br />
+									<p>
+										Si <b>Prohibida entrada despues de fecha</b> esta activado, entonces
+										<b>Máxima fecha de entrada</b> es la máxima fecha de entrada a la clase:
+										todo usuario que intente entrar a la clase pasada esta fecha se le será
+										denegado el acceso. Si no esta activo, los usuarios pueden entrar
+										mientras la clase esta abierta.
+									</p>
+									<label class="label text-color-aqua">Clase pública:</label><br />
+									<input class="input" type="radio" name="public" value="true" /><br />
+									<label class="label text-color-aqua">Clase privada:</label><br />
+									<input class="input" type="radio" name="public" value="false" checked="checked" /><br />
+									<p>
+										Determina si la clase es pública o no. Si la clase es pública, cualquier
+										persona puede entrar, inclusive usuarios no registrados en el sistema.
+										Si la clase no es pública, solo los usuarios solicitados serán
+										ingresados a la sala.
+									</p>
+									<label class="label text-color-aqua">Usuarios:</label><br />
+									<input class="input" type="text" name="users" value="" /><br />
+									<p>
+										Lista de los nombres de usuarios (apodos) de los usuarios que deben
+										ingresar a la sala (separada por comas). Si la sala es pública, se puede
+										dejar vacío.
+									</p>
+									<div class="button-group">
+										<input type="submit" name="submit" value="Crear" class="input button width-block color-sky"/>
+										<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+									</div>
+								</form>
+							</section>
+						</section>
+						<section class="container padding-16 no-margin tab" data-tab-name="rooms.close" id="close">
+							<a name="close"></a>
+							<header class="flexible center">
+								<h1 class="text-jumbo-1">Cerrar una sala</h1>
+							</header>
+							<section class="container padding-16 no-margin">
+								<form action="/managerooms" method="POST">
+									<input type="hidden" hidden="hidden" readonly="readonly" name="action" value="close"/>
+									<label class="label text-color-aqua">Identificador de la sala:</label><br />
+									<input class="input" type="text" name="id" value="" /><br />
+									<p>
+										Identificador único de la sala, se muestra despues del @ en la lista de salas.
+									</p>
+									<div class="button-group">
+										<input type="submit" name="submit" value="Cerrar" class="input button width-block color-everred"/>
+										<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+									</div>
+								</form>
+							</section>
+						</section>
+					</div>
+				</section>
+			</section>
+		</main>
+		<footer class="container color-everblack no-margin padding-16 footer">
+			Potenciado con bbbmyadmin v1.0.0 - by Alejandro Linarez Rangel. See the
+			project pages at <a href="http://github.com/alinarezrangel/bbbmyadmin">GitHub</a>
+			and <a href="http://bbbmyadmin.sourceforge.net/">SourceForge</a>.
+			This product uses BigBlueButton and is not endorsed or certified
+			by BigBlueButton Inc. BigBlueButton and the BigBlueButton Logo are
+			trademarks of BigBlueButton Inc. Para ver más información legal ingrese a
+			<a href="legal.html">Información Legal</a>.
+		</footer>
+		<script type="text/javascript">
+			window.addEventListener("load", function()
+			{
+				if(PARGS.errorCode != "")
+				{
+					$("#error").html("Error: " + ETABLE[parseInt(PARGS.errorCode)]);
+				}
+				if((PARGS.errorBBB != "") && (typeof PARGS.errorBBB !== "undefined"))
+				{
+					$("#error").html("Error (BBB): " + PARGS.errorBBB);
+				}
+			});
+		</script>
+	</body>
+</html>

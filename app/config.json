@@ -1,0 +1,22 @@
+{
+	"server": {
+		"port": 4567
+	},
+	"sessions": {
+		"secret": "454RR5E45R345FDES"
+	},
+	"database": {
+		"name": "bbbmyadmin",
+		"user": "bbbmyadmin",
+		"password": "a123b456",
+		"host": "localhost"
+	},
+	"bbb": {
+		"secret": "",
+		"totalhost": ""
+	},
+	"terminal": {
+		"ansicolor": false
+	},
+	"verbose": false
+}

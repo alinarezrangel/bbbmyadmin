@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es_VEN">
+	<head>
+		<title>bbbmyadmin</title>
+		<meta charset="UTF-8">
+		<link href="generation/css/generation.css" rel="stylesheet"/>
+		<link href="generation/css/pallete_basics.css" rel="stylesheet"/>
+		<link href="hover.css" rel="stylesheet"/>
+		<link href="style.css" rel="stylesheet"/>
+		<script src="generation/js/generation.js" type="text/javascript"></script>
+		<script src="jquery.js" type="text/javascript"></script>
+		<!--<script src="/socket.io/socket.io.js" type="text/javascript"></script>-->
+		<script src="index.js" type="text/javascript"></script>
+	</head>
+	<body class="flexible direction-column total-height">
+		<nav class="navigation color-ocean gradient-nav">
+			<a href="/user">Inicio</a>
+			<a href="/user?startAtScreen=config#config">Configuración</a>
+			<a href="/user?startAtScreen=rooms#rooms">Salas</a>
+			<a href="#admin">Administrar usuarios</a>
+		</nav>
+		<main class="width-block f1">
+			<section class="container padding-16 no-margin first" id="admin">
+				<a name="admin"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Administrar usuarios</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<nav class="navigation color-ocean gradient-nav">
+						<a href="#view" class="tab-opener" data-open-tab="users.view">Ver usuarios</a>
+						<a href="#new" class="tab-opener" data-open-tab="users.new">Crear nuevo usuario</a>
+						<a href="#find" class="tab-opener" data-open-tab="users.find">Buscar usuario</a>
+						<a href="#delete" class="tab-opener" data-open-tab="users.delete">Borrar usuario</a>
+					</nav>
+					<div class="width-block">
+						<section class="container padding-16 no-margin tab first" data-tab-name="users.view" id="view">
+							<a name="view"></a>
+							<p>
+								A continuación, una lista de los usuarios registrados en el sistema:
+							</p>
+							<table id="users" class="table width-block">
+								<thead>
+									<tr class="color-greenapple">
+										<th>Nombre</th>
+										<th>Apellidos</th>
+										<th>Cedula</th>
+										<th>Permisos</th>
+										<th>Ultimo acceso</th>
+										<th>Nombre de usuario</th>
+										<th>Sala de su proxima clase</th>
+									</tr>
+								</thead>
+								<tbody id="userstd">
+								</tbody>
+							</table>
+							<div class="navigation color-grey margin-8">
+								<a href="#" id="ant">Página anterior</a>
+								<a href="#" id="cur">0</a>
+								<a href="#" id="sig">Página siguiente</a>
+							</div>
+							<noscript>
+								<a href="/manageusers?get=ulist&page=0" class="button color-evergreen">Ver</a><br />
+							</noscript>
+						</section>
+						<section class="container padding-16 no-margin tab" data-tab-name="users.new" id="new">
+							<a name="new"></a>
+							<form action="/manageusers" method="post" class="form">
+								<label class="label text-color-aqua" to="name">Nombres: <span class="text-color-everred">Necesario</span></label><br />
+								<input class="input" type="text" name="name" value="" id="name" required="required" placeholder="Nombre del usuario" title="Nombres del usuario"/><br />
+								<label class="label text-color-aqua" to="lastname">Apellidos: <span class="text-color-everred">Necesario</span></label><br />
+								<input class="input" type="text" name="lastname" value="" id="lastname" required="required" placeholder="Apellidos del usuario" title="Apellidos del usuario"/><br />
+								<label class="label text-color-aqua" to="ci">Cedula de identidad (C.I.): <span class="text-color-everred">Opcional, recomendado</span></label><br />
+								<input class="input" type="text" name="ci" value="" id="ci" pattern="[0-9]+"/><br />
+								<label class="label text-color-aqua" to="nickname">Nombre de usuario (apodo): <span class="text-color-everred">Necesario</span></label><br />
+								<input class="input" type="text" name="nickname" value="" id="nickname" required="required" placeholder="Apodo del usuario dentro del sistema" title="Apodo del usuario"/><br />
+								<label class="label text-color-aqua" to="password">Contraseña: <span class="text-color-everred">Necesario</span></label><br />
+								<input class="input" type="password" name="password" value="" id="password" required="required"/><br />
+								<label class="label text-color-aqua" to="email">Correo electrónico (email): <span class="text-color-everred">Necesario</span></label><br />
+								<input class="input" type="text" name="email" value="" id="email" required="required" placeholder="Correo electronico del usuario"/><br />
+								<label class="label text-color-aqua" to="role">Permisos:</label><br />
+								<select class="box color-white border-vertical no-border-top border-color-grey padding-4 width-block margin-4" name="role" id="role" required="required">
+									<option value="user">Usuario (+i-ncla)</option>
+									<option value="mod">Moderador (+incl-a)</option>
+									<option value="admin">Administrador (+incla)</option>
+								</select>
+								<div class="button-group">
+									<input type="submit" name="submit" value="Crear" class="input button width-block color-sky"/>
+									<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+								</div>
+								<input hidden="hidden" readonly="readonly" type="hidden" name="action" value="newuser"/><br />
+							</form>
+							<h2>Ayuda</h2>
+							<p>
+								Desde aqui puede crear un nuevo usuario, En los campos Nombres y Apellidos ingrese
+								los nombres y apellidos <strong>reales</strong> del nuevo usuario, luego
+								ingrese su cedula de identidad venezolana, C.I. o deje el campo vacio.
+							</p>
+							<p>
+								Luego, complete el formulario, y especifique los permisos del nuevo
+								usuario:
+							</p>
+							<ul class="list">
+								<li>Usuario (+i-ncla): un usuario puede ingresar a su sala, más no puede ver, crear o cerrar salas ni administrar el sistema</li>
+								<li>Moderador (+incl-a): un moderador puede ingresar, ver, crear y borrar salas, más no administrar el sistema</li>
+								<li>Administrador (+incla): puede realizar cualquier acción en el sistema</li>
+							</ul>
+							<p>
+								El formato de permisos es similar al de GNU/Linux: <code>+</code> para
+								indicar la existencia de un permiso, y <code>-</code> para indicar su
+								inexistencia. Los permisos válidos son:
+							</p>
+							<ul class="list">
+								<li><code>i</code>: Ingresar a cualquier sala</li>
+								<li><code>n</code>: Crear salas</li>
+								<li><code>c</code>: Cerrar salas</li>
+								<li><code>l</code>: Listar salas</li>
+								<li><code>a</code>: Administrar sistema (servidor, base de datos, bbbmyadmin, entre otros)</li>
+							</ul>
+							<p>
+								El único permiso universal (todos lo poseen) es ingresar a la sala especificada.
+							</p>
+						</section>
+						<section class="container padding-16 no-margin tab" data-tab-name="users.find" id="find">
+							<a name="find"></a>
+							<form action="/manageusers" method="post" class="form">
+								<input class="input" type="text" name="search" value="" id="search" required="required" placeholder="Buscar" title="Buscar"/><br />
+								<label class="label text-color-aqua" to="findby">Buscar por:</label><br />
+								<select class="box color-white border-vertical no-border-top border-color-grey padding-4 width-block margin-4" name="findby" id="findby" required="required">
+									<option value="username">Nombre de usuario</option>
+									<option value="ci">Cedula de identidad (CI)</option>
+									<option value="names">Nombre y apellido</option>
+									<option value="room">Sala (ID)</option>
+								</select>
+								<div class="button-group">
+									<input type="submit" name="submit" value="Buscar" class="input button width-block color-sky"/>
+									<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+								</div>
+								<input hidden="hidden" readonly="readonly" type="hidden" name="action" value="finduser"/><br />
+							</form>
+						</section>
+						<section class="container padding-16 no-margin tab" data-tab-name="users.delete" id="delete">
+							<a name="delete"></a>
+							<button type="button" data-open-modal="modal1" class="button color-everred width-block">
+								Borrar un usuario
+							</button>
+							<noscript>
+								<a href="/deleteuser" class="button color-everred width-block">Borrar</a>
+							</noscript>
+						</section>
+					</div>
+				</section>
+			</section>
+		</main>
+		<footer class="container color-everblack no-margin padding-16 footer">
+			Potenciado con bbbmyadmin v1.0.0 - by Alejandro Linarez Rangel. See the
+			project pages at <a href="http://github.com/alinarezrangel/bbbmyadmin">GitHub</a>
+			and <a href="http://bbbmyadmin.sourceforge.net/">SourceForge</a>.
+			This product uses BigBlueButton and is not endorsed or certified
+			by BigBlueButton Inc. BigBlueButton and the BigBlueButton Logo are
+			trademarks of BigBlueButton Inc. Para ver más información legal ingrese a
+			<a href="legal.html">Información Legal</a>.
+		</footer>
+		<div class="modal" id="modal1">
+			<div class="modal-content padding-16 color-everred">
+				<header class="container padding-16 color-dark-red">
+					<span class="close-button" data-close-modal="modal1">Cerrar</span>
+					<h2>Borrar usuario</h2>
+				</header>
+				<section class="container padding-16">
+					<p>
+						¿Estas seguro de esto? esta acción no se puede revertir. Si lo que deseas es
+						inhabilitar al usuario, hay mejores formas de hacerlo (ver la
+						<a href="help/handling-users.html">ayuda de usuarios</a>).
+					</p>
+					<form class="form box border color-white" action="/manageusers" method="POST">
+						<label class="label text-color-aqua">Nombre de usuario (apodo) del usuario a borrar</label><br />
+						<input type="text" class="input" name="nickname" value=""/><br />
+						<div class="button-group">
+							<input type="submit" name="submit" value="Borrar" class="input button width-block color-red border border-color-dark-red bs-2"/>
+							<input type="reset" name="reset" value="Cancelar" class="input button width-block color-white border border-color-black bs-2" data-close-modal="modal1"/>
+						</div>
+						<input hidden="hidden" readonly="readonly" type="hidden" name="action" value="delete"/>
+					</form>
+				</section>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var pgindex = 0;
+			$("#ant").click(function()
+			{
+				pgindex -= 1;
+				if(pgindex < 0)
+				{
+					pgindex = 0;
+				}
+				$("#cur").html(pgindex);
+				getUsers();
+			});
+			$("#sig").click(function()
+			{
+				pgindex += 1;
+				$("#cur").html(pgindex);
+				getUsers();
+			});
+			function getUsers()
+			{
+				$.get("/data?request=allusers&page=" + (pgindex * 20), function(json)
+				{
+					if(json == "403")
+					{
+						$("#userstd").html("<tr><td><span class=\"text-color-red\">Error: " + ETABLE[ENOACCESS] + "</span></td></tr>");
+						return;
+					}
+					if(json == "500")
+					{
+						$("#userstd").html("<tr><td><span class=\"text-color-red\">Error: " + ETABLE[EQUECAN] + "</span></td></tr>");
+						return;
+					}
+					json = JSON.parse(json);
+					var html = "";
+					for(var i = 0;i < json.users.length;i++)
+					{
+						var j = json.users[i];
+						html += "<tr><td>";
+						html += j.name;
+						html += "</td><td>";
+						html += j.lastname;
+						html += "</td><td>";
+						html += j.ci;
+						html += "</td><td>";
+						html += j.rolev + " (" + j.role + ")";
+						html += "</td><td>";
+						html += j.lastaccess;
+						html += "</td><td><a href=\"/manageusers?get=user&username=" + encodeURI(j.username) + "\">";
+						html += j.username;
+						html += "</a></td><td>";
+						html += j.nextroom + "@" + j.nextroomid;
+						html += "</td></tr>";
+					}
+					$("#userstd").html(html);
+				});
+			}
+			getUsers();
+		</script>
+	</body>
+</html>

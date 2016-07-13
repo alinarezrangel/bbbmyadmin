@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es_VEN">
+	<head>
+		<title>bbbmyadmin</title>
+		<meta charset="UTF-8">
+		<link href="generation/css/generation.css" rel="stylesheet"/>
+		<link href="generation/css/pallete_basics.css" rel="stylesheet"/>
+		<link href="hover.css" rel="stylesheet"/>
+		<link href="style.css" rel="stylesheet"/>
+		<script src="generation/js/generation.js" type="text/javascript"></script>
+		<script src="jquery.js" type="text/javascript"></script>
+		<!--<script src="/socket.io/socket.io.js" type="text/javascript"></script>-->
+		<script src="index.js" type="text/javascript"></script>
+	</head>
+	<body class="flexible direction-column total-height">
+		<nav class="navigation color-ocean gradient-nav" id="topnav">
+			<a href="#home" class="tab-opener" data-open-tab="home">Inicio</a>
+			<a href="#config" class="tab-opener" data-open-tab="config">Configuración</a>
+			<a href="#rooms" class="tab-opener updaterrooms" data-open-tab="rooms">Salas</a>
+		</nav>
+		<main class="width-block f1">
+			<section class="container padding-16 no-margin tab first" data-tab-name="home" id="home">
+				<a name="home"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">BigBlueButton My Admin</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						Bienvenido <span id="name">usuario</span>! puedes administrar o utilizar Big
+						Blue Button desde aqui.
+					</p>
+					<div class="row wrap justify-space-around">
+						<div class="col f1 o1 card border flexible center">
+							<h3>(Personalizable)</h3>
+							<p class="padding-16">
+								Ingresa algo acerca de tu organización o empresa.
+							</p>
+						</div>
+						<div class="col f1 o2 card border flexible center">
+							<h3>Tus salas</h3>
+							<p class="padding-16">
+								Ingresa <a href="/meeting" target="_blank">aquí</a> para acceder a tu sala.
+							</p>
+						</div>
+						<div class="col f1 o3 card border flexible center">
+							<h3>(Personalizable)</h3>
+							<p class="padding-16">
+								Ingresa algo acerca de tu organización o empresa.
+							</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="rooms" id="rooms">
+				<a name="rooms"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Salas</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						Las salas disponibles son:
+						<a href="#" class="button color-green updaterrooms">
+							Recargar
+						</a>
+						<a href="/managerooms" class="button color-green updaterrooms">
+							Administrar salas
+						</a>
+					</p>
+					<ul class="ul stripped" id="roomsl">
+					</ul>
+					<noscript>
+						<a href="/rooms" class="button color-evergreen">
+							Acceder a la vista manual.
+						</a>
+					</noscript>
+				</section>
+			</section>
+			<section class="container padding-16 no-margin tab" data-tab-name="config" id="config">
+				<a name="config"></a>
+				<header class="flexible center">
+					<h1 class="text-jumbo-3">Configuración</h1>
+				</header>
+				<section class="container padding-16 no-margin">
+					<p>
+						<a href="logout" class="button color-evergreen">Cerrar sesión</a>
+						<a href="user" class="button color-everred">Recargar</a>
+					</p>
+					<div class="width-block border border-color-evergreen" id="adminconfig">
+					</div>
+					<noscript>
+						<a href="/config" class="button color-evergreen">
+							Acceder a la configuración manual.
+						</a>
+					</noscript>
+				</section>
+			</section>
+		</main>
+		<footer class="container color-everblack no-margin padding-16 footer">
+			Potenciado con bbbmyadmin v1.0.0 - by Alejandro Linarez Rangel. See the
+			project pages at <a href="http://github.com/alinarezrangel/bbbmyadmin">GitHub</a>
+			and <a href="http://bbbmyadmin.sourceforge.net/">SourceForge</a>.
+			This product uses BigBlueButton and is not endorsed or certified
+			by BigBlueButton Inc. BigBlueButton and the BigBlueButton Logo are
+			trademarks of BigBlueButton Inc. Para ver más información legal ingrese a
+			<a href="legal.html">Información Legal</a>.
+		</footer>
+		<script type="text/javascript">
+			window.addEventListener("load", function()
+			{
+				$.get("/data?request=name", function(data)
+				{
+					$("#name").html(data);
+				});
+				$.get("/data?request=adminconfigframe", function(html)
+				{
+					if(html == "403")
+					{
+						$("#adminconfig").html("<span class=\"text-color-red\">Error: " + ETABLE[ENOACCESS] + "</span>");
+						return;
+					}
+					if(html == "500")
+					{
+						$("#adminconfig").html("<span class=\"text-color-red\">Error: " + ETABLE[EQUECAN] + "</span>");
+						return;
+					}
+					$("#adminconfig").html(html);
+					tabs();
+				});
+				$(".updaterrooms").click(function()
+				{
+					$("#roomsl").html("<li>Cargando</li>");
+					$.get("/data?request=getrooms", function(data)
+					{
+						if(data == "403")
+						{
+							$("#roomsl").html("<li class=\"text-color-red\">" + ETABLE[ENOACCESS] + "</li>");
+							return;
+						}
+						if(data == "500")
+						{
+							$("#roomsl").html("<span class=\"text-color-red\">Error: " + ETABLE[EQUECAN] + "</span>");
+							return;
+						}
+						var rooms = JSON.parse(data);
+						if(rooms.meetings.length == 0)
+							$("#roomsl").html("<li>No hay salas</li>");
+						else
+							$("#roomsl").html("");
+						rooms.meetings.forEach(function(i, j)
+						{
+							var li = "<li>";
+							li += i.name + "@" + i.id;
+							if(!i.running)
+							{
+								li += " <span class=\"text-color-red\">La sala no esta corriendo, le recomendamos borrarla</span>"
+							}
+							li += " <a href=\"/joinRoom?id=" + i.id + "\">Ingresar</a></li>";
+							$("#roomsl").html($("#roomsl").html() + li);
+						});
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
