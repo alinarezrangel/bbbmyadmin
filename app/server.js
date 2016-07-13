@@ -185,6 +185,31 @@ function callBBB(api, args, callback)
 	});
 }
 
+function postBBB(api, args, post, callback)
+{
+	log("Posting BBB");
+	var oparams = parseBBB(api, args);
+	request({
+		url: oparams,
+		method: "POST",
+		headers: {
+			"content-type": post.type
+		},
+		body: post.body
+	}, function(error, response, body)
+	{
+		if(handleErrors(error))
+		{
+			callback(error, null);
+			return;
+		}
+		log("Status " + JSON.stringify(response));
+		// body es el XML devuelto por BBB
+		var parser = new DOMParser();
+		callback(error, parser.parseFromString(body));
+	});
+}
+
 function saveConfig()
 {
 	fs.writeFileSync("config.json", JSON.stringify(config, null, "\t"));
@@ -2098,6 +2123,7 @@ app.post("/managerooms", function(req, res)
 					var maxenabled = req.body.maxenabled || "false";
 					var vpublic = req.body.public || "false";
 					var users = req.body.users || "";
+					var document = req.body.document || "";
 					var timecreated = "";
 					var date = /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-3][0-9]) ([0-1][0-9]|2[0-3]):[0-5][0-9]$/gm;
 					var ulist = /^[a-zA-Z0-9, ]*$/gm;
@@ -2138,6 +2164,12 @@ app.post("/managerooms", function(req, res)
 						res.redirect("/managerooms?errorCode=10");
 						return;
 					}
+					if(!validator.isURL(document))
+					{
+						handleErrors(new Error("Invalid data URL for room"));
+						res.redirect("/managerooms?errorCode=10");
+						return;
+					}
 					vpublic = (vpublic == "true")? 1 : 0;
 					maxenabled = (maxenabled == "true")? 1 : 0;
 					var userlist = users.split(",").map(function(user)
@@ -2158,13 +2190,17 @@ app.post("/managerooms", function(req, res)
 						nombre: name
 					};
 					var logout = "http://" + ip.address() + ":" + config.server.port + "/meetingUserLogsOuts";
-					log("Creando sala con " + logout);
-					callBBB("create", {
+					var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <modules> <module name=\"presentation\"> <document url=\"" + document + "\" /> </module> </modules>";
+					log("Creando sala con " + logout + " y " + xml);
+					postBBB("create", {
 						name: name,
 						meetingID: id,
 						attendeePW: userpasswd,
 						moderatorPW: modpasswd,
 						logoutURL: logout
+					}, {
+						type: "text/xml",
+						body: xml
 					}, function(err, xml)
 					{
 						if(handleErrors(err))

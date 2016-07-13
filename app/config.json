@@ -12,8 +12,8 @@
 		"host": "localhost"
 	},
 	"bbb": {
-		"secret": "",
-		"totalhost": ""
+		"secret": "f3a5cf50cd0416a3ff74828407d88e11",
+		"totalhost": "192.168.44.22/bigbluebutton/api/"
 	},
 	"terminal": {
 		"ansicolor": false
