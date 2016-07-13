@@ -2157,7 +2157,7 @@ app.post("/managerooms", function(req, res)
 						tiempo_creado: "",
 						nombre: name
 					};
-					var logout = ip.address() + ":" + config.server.port + "/meetingUserLogsOuts";
+					var logout = "http://" + ip.address() + ":" + config.server.port + "/meetingUserLogsOuts";
 					log("Creando sala con " + logout);
 					callBBB("create", {
 						name: name,
@@ -2321,6 +2321,90 @@ app.get("/meetingUserLogsOuts", function(req, res)
 					res.redirect("/user");
 					connection.end();
 				});
+			}
+			else
+			{
+				res.status(403);
+				res.sendFile(__dirname + "/forbidden.html");
+			}
+		});
+	}
+	else
+	{
+		res.redirect("/");
+	}
+});
+
+app.post("/changePassword", function(req, res)
+{
+	if((req.session !== null) && (req.session.valid === "true"))
+	{
+		var post = req.body;
+		var connection = mysql.createConnection(
+		{
+			host     : config.database.host,
+			user     : config.database.user,
+			password : config.database.password,
+			database: config.database.name
+		});
+		var p = "";
+		connection.query("SELECT * FROM `permisos` WHERE `id`=" + connection.escape(req.session.eid + ""), function(err, rows)
+		{
+			if(handleErrors(err))
+			{
+				res.status(500);
+				res.sendFile(__dirname + "/servererror.html");
+				return;
+			}
+			if((typeof rows === "undefined") || (typeof rows[0] === "undefined"))
+			{
+				handleErrors(new Error("Unexpected query result null"));
+				res.status(500);
+				res.sendFile(__dirname + "/servererror.html");
+				connection.end();
+				return;
+			}
+			log("Matched " + JSON.stringify(rows));
+			p = rows[0].crear + "" + rows[0].cerrar + "" + rows[0].ingresar + "" + rows[0].listar + "" + rows[0].configurar;
+			if(p.charAt(2) == "1")
+			{
+				var p1 = req.body.p1 || "a";
+				var p2 = req.body.p2 || "b";
+				if((p1.match(/^[a-zA-Z0-9_\-+]+$/gm) === null) ||
+					(p2.match(/^[a-zA-Z0-9_\-+]+$/gm) === null))
+				{
+					handleErrors(new Error("The passwords are invalids"));
+					connection.end();
+					return;
+				}
+				if(p1 === p2)
+				{
+					connection.query("UPDATE `usuarios` SET `contrasenna` = ? WHERE `id` = ?", [bcrypt.hashSync(p1, bcrypt.genSaltSync()), req.session.uid], function(err, rows)
+					{
+						if(handleErrors(err))
+						{
+							res.status(500);
+							res.sendFile(__dirname + "/servererror.html");
+							return;
+						}
+						if(typeof rows === "undefined")
+						{
+							handleErrors(new Error("Unexpected query result null"));
+							res.status(500);
+							res.sendFile(__dirname + "/servererror.html");
+							connection.end();
+							return;
+						}
+						res.redirect("/user?changed=successful");
+						connection.end();
+					});
+				}
+				else
+				{
+					log("The passwords are different");
+					res.redirect("/user?errorCode=0");
+					connection.end();
+				}
 			}
 			else
 			{

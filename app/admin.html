@@ -85,6 +85,16 @@
 						<a href="logout" class="button color-evergreen">Cerrar sesión</a>
 						<a href="user" class="button color-everred">Recargar</a>
 					</p>
+					<form class="form border" action="/changePassword" method="POST">
+						<label class="label">Nueva contraseña:</label><br />
+						<input class="input" type="password" name="p1" value="" /><br />
+						<label class="label">Ingresa de nuevo:</label><br />
+						<input class="input" type="password" name="p2" value="" /><br />
+						<div class="button-group">
+							<input type="submit" name="submit" value="Cambiar" class="input button width-block color-sky"/>
+							<input type="reset" name="reset" value="Reestablecer" class="input button width-block color-sky"/>
+						</div>
+					</form>
 					<div class="width-block border border-color-evergreen" id="adminconfig">
 					</div>
 					<noscript>
