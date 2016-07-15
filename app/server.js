@@ -365,6 +365,15 @@ app.use(cookieSession({secret: config.sessions.secret, httpOnly: true, maxAge: 8
 
 app.use(express.static('public'));
 
+app.use(function(req, res, next)
+{
+	res.setHeader("Strict-Transport-Security", "max-age=31536000 ; includeSubDomains");
+	res.setHeader("X-XSS-Protection", "0");
+	res.setHeader("X-Frame-Options", "deny");
+	res.setHeader("Content-Security-Policy", "default-src 'self'");
+	return next();
+});
+
 server.listen(config.server.port);
 
 app.get('/', function(req, res)
