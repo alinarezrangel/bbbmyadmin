@@ -162,18 +162,6 @@
 			trademarks of BigBlueButton Inc. Para ver más información legal ingrese a
 			<a href="legal.html">Información Legal</a>.
 		</footer>
-		<script type="text/javascript">
-			window.addEventListener("load", function()
-			{
-				if(PARGS.errorCode != "")
-				{
-					$("#error").html("Error: " + ETABLE[parseInt(PARGS.errorCode)]);
-				}
-				if((PARGS.errorBBB != "") && (typeof PARGS.errorBBB !== "undefined"))
-				{
-					$("#error").html("Error (BBB): " + PARGS.errorBBB);
-				}
-			});
-		</script>
+		<script type="text/javascript" src="scripts/adminrooms.js"></script>
 	</body>
 </html>
