@@ -40,25 +40,25 @@
 							<section class="container padding-16 no-margin">
 								<form action="/managerooms" method="POST">
 									<input type="hidden" hidden="hidden" readonly="readonly" name="action" value="new" />
-									<label class="label text-color-aqua">Nombre de la sala:</label><br />
+									<label class="label text-color-aqua">Nombre de la sala: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="text" name="name" value="" /><br />
 									<p>
 										El nombre de la sala a los usuarios, por ejemplo "Clase 32B" o
 										"Pronombres personales"
 									</p>
-									<label class="label text-color-aqua">Identificador de la sala:</label><br />
+									<label class="label text-color-aqua">Identificador de la sala: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="text" name="id" value="" /><br />
 									<p>
 										Identificador único de la sala, en minusculas sin espacios, guiones o caracteres
 										no alfanuméricos. Por ejemplo: "clase1" o "clase45"
 									</p>
-									<label class="label text-color-aqua">Contraseña de moderador:</label><br />
+									<label class="label text-color-aqua">Contraseña de moderador: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="password" name="modpasswd" value="" /><br />
 									<p>
 										Contraseña de los moderadores, debe ser lo más segura posible dado que
-										no se procesará antes de ser enviada.
+										no se procesará antes de ser enviada. <span class="text-color-red">Debe ser distinta a la contraseña del usuario</span>
 									</p>
-									<label class="label text-color-aqua">Contraseña de usuario:</label><br />
+									<label class="label text-color-aqua">Contraseña de usuario: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="password" name="userpasswd" value="" /><br />
 									<p>
 										Contraseña de los usuarios, debe ser lo más segura posible dado que no
@@ -87,7 +87,7 @@
 										Estimación de la fecha y hora de cierre de la clase. En el mismo formato
 										de la fecha de inicio.
 									</p>
-									<label class="label text-color-aqua">Máxima fecha de entrada:</label><br />
+									<label class="label text-color-aqua">Máxima fecha de entrada: <span class="text-color-everred">Requerido si esta prohibida la entrada despues de fecha</span></label><br />
 									<input class="input" type="text" name="maxs" value="2016-01-01 00:00" /><br />
 									<label class="label text-color-aqua">Permitida entrada despues de fecha:</label><br />
 									<input class="input" type="radio" name="maxenabled" value="false" checked="checked" /><br />
@@ -110,14 +110,14 @@
 										Si la clase no es pública, solo los usuarios solicitados serán
 										ingresados a la sala.
 									</p>
-									<label class="label text-color-aqua">Usuarios:</label><br />
+									<label class="label text-color-aqua">Usuarios: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="text" name="users" value="" /><br />
 									<p>
 										Lista de los nombres de usuarios (apodos) de los usuarios que deben
-										ingresar a la sala (separada por comas). Si la sala es pública, se puede
-										dejar vacío.
+										ingresar a la sala (separada por comas). Si la sala es pública, puede no
+										especificar usuarios, pero siempre debe haber al menor 1 moderador o administrador.
 									</p>
-									<label class="label text-color-aqua">Presentación:</label><br />
+									<label class="label text-color-aqua">Presentación: <span class="text-color-everred">Requerido</span></label><br />
 									<input class="input" type="text" name="document" value="" /><br />
 									<p>
 										URL a una presentación PDF a mostrar en la clase.

@@ -1256,7 +1256,7 @@ app.post("/config", function(req, res)
 				if(typeof post.sessionsecret != "undefined")
 				{
 					log("Intento de cambiar el secreto de sesion a " + post.sessionsecret);
-					config.session.secret = post.sessionsecret;
+					config.sessions.secret = post.sessionsecret;
 				}
 				if(typeof post.dbname != "undefined")
 				{
