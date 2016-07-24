@@ -353,6 +353,209 @@ function getStdUserData(rd, pp, ps, sl)
 	return user;
 }
 
+function closeRoom(id, connection, res, callback)
+{
+	var delete_in_error = false;
+	log("Eliminando " + id);
+	connection.query("SELECT * FROM `salas` WHERE `bbbid` = ?", [id], function(err, sl)
+	{
+		if(handleErrors(err))
+		{
+			//res.status(500);
+			//res.sendFile(__dirname + "/servererror.html");
+			callback(err);
+			return;
+		}
+		if((typeof sl === "undefined") || (typeof sl[0] === "undefined"))
+		{
+			handleErrors(new Error("Unexpected query result null"));
+			callback(new Error("Unexpected query result null"));
+			return;
+		}
+		log("Obtenidos datos de la sala");
+		var modpasswd = sl[0].clave_moderador;
+		var sid = sl[0].id;
+		log("modpassword " + modpasswd);
+		callBBB("end", {
+			meetingID: id,
+			password: modpasswd
+		}, function(err, xml)
+		{
+			if(handleErrors(err))
+			{
+				callback(err);
+				return;
+			}
+			log("Intento de cerrarse con BBB");
+			var status = xml.getElementsByTagName("returncode");
+			if(status.length <= 0)
+			{
+				handleErrors(new Error("No se puede contactar correctamente con BigBlueButton"));
+				callback(new Error("No se puede contactar correctamente con BigBlueButton"));
+				return;
+			}
+			status = status[0].textContent;
+			log("Eliminada correctamente? " + status);
+			if(status == "FAILED")
+			{
+				var key = xml.getElementsByTagName("messageKey")[0].textContent;
+				if(key == "notFound")
+				{
+					log("Sala no existente: borrando para seguir ACID");
+					delete_in_error = true;
+				}
+			}
+			if((status == "SUCCESS") || delete_in_error)
+			{
+				log("Si, eliminando de la DB");
+				connection.query("UPDATE `usuarios` SET `sala` = 0 WHERE `sala` = ?", [sid], function(err, rows)
+				{
+					if(handleErrors(err))
+					{
+						callback(err);
+						return;
+					}
+					if(typeof rows === "undefined")
+					{
+						handleErrors(new Error("Unexpected query result null"));
+						callback(new Error("Unexpected query result null"));
+						return;
+					}
+					log("Actualizados los usuarios");
+					connection.query("DELETE FROM `salas` WHERE `bbbid` = ?", [id], function(err, rows)
+					{
+						if(handleErrors(err))
+						{
+							callback(err);
+							return;
+						}
+						if(typeof rows === "undefined")
+						{
+							handleErrors(new Error("Unexpected query result null"));
+							callback(new Error("Unexpected query result null"));
+							return;
+						}
+						log("Eliminada sala de la DB");
+						callback(null);
+					});
+				});
+			}
+			else
+			{
+				callback(new Error("bigbluebutton error: " + xml.getElementsByTagName("message")[0].textContent));
+			}
+		});
+	});
+}
+
+function ACIDifyDatabase(connection)
+{
+	// Request all rooms from the db
+	// Request all rooms from the bbb
+	// If a db room not have a bbb room: delete the db room
+	connection.query("SELECT * FROM `salas` WHERE 1", function(err, rows)
+	{
+		if(handleErrors(err))
+		{
+			connection.end();
+			return;
+		}
+		if((typeof rows === "undefined") || (typeof rows[0] === "undefined"))
+		{
+			connection.end();
+			handleErrors(new Error("Unexpected query result null"));
+			return;
+		}
+		var i = 0;
+		var l = rows.length;
+		for(i = 0; i < l; i++)
+		{
+			var mid = rows[i].bbbid;
+			var passwd = rows[i].clave_moderador;
+			var del = (i + 1) >= l;
+			var sid = rows[i].id;
+			log("Sala @" + mid + " DEL " + del);
+			if(mid == "nada")
+				continue;
+			callBBB("getMeetingInfo", {
+				"meetingID": mid,
+				"password": passwd
+			}, function(mid, sid, del, err, xmldom)
+			{
+				if(handleErrors(err))
+				{
+					if(del)
+						connection.end();
+					return;
+				}
+				var status = xmldom.getElementsByTagName("returncode")[0].textContent;
+				if(status == "SUCCESS")
+				{
+					log("La sala existe en bbb y en la DB");
+				}
+				else
+				{
+					log("Error de bbb, seguramente no existe la sala, ACIDificando (borrar) la sala");
+					log(xmldom.getElementsByTagName("message")[0].textContent);
+					connection.query("UPDATE `usuarios` SET `sala` = 0 WHERE `sala` = ?", [sid], function(mid, del, err ,sl)
+					{
+						if(handleErrors(err))
+						{
+							if(del)
+								connection.end();
+							return;
+						}
+						if(typeof rows === "undefined")
+						{
+							if(del)
+								connection.end();
+							handleErrors(new Error("Unexpected query result null"));
+							return;
+						}
+						connection.query("DELETE FROM `salas` WHERE `bbbid` = ?", [mid], function(del, err, rs)
+						{
+							if(handleErrors(err))
+							{
+								if(del)
+									connection.end();
+								return;
+							}
+							if(typeof rows === "undefined")
+							{
+								if(del)
+									connection.end();
+								handleErrors(new Error("Unexpected query result null"));
+								return;
+							}
+							log("Borrada");
+							if(del)
+							{
+								connection.end();
+							}
+						}.bind(connection, del));	
+					}.bind(connection, mid, del));
+				}
+			}.bind(connection, mid, sid, del));
+		}
+	});
+}
+
+function ACIDloop()
+{
+	var connection = mysql.createConnection(
+	{
+		host     : config.database.host,
+		user     : config.database.user,
+		password : config.database.password,
+		database: config.database.name
+	});
+	log("loopeando");
+	ACIDifyDatabase(connection);
+	setTimeout(ACIDloop, 5000);
+}
+
+setTimeout(ACIDloop, 5000);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 //app.use(express.cookieParser());
@@ -2019,105 +2222,16 @@ app.post("/managerooms", function(req, res)
 						res.redirect("/managerooms");
 						return;
 					}
-					log("Eliminando " + id);
-					connection.query("SELECT * FROM `salas` WHERE `bbbid` = ?", [id], function(err, sl)
+					closeRoom(id, connection, res, function(err)
 					{
 						if(handleErrors(err))
 						{
-							res.status(500);
-							res.sendFile(__dirname + "/servererror.html");
-							return;
-						}
-						if((typeof sl === "undefined") || (typeof sl[0] === "undefined"))
-						{
-							handleErrors(new Error("Unexpected query result null"));
-							res.status(500);
-							res.sendFile(__dirname + "/servererror.html");
+							res.redirect("/managerooms?errorBBB=" + xml.getElementsByTagName("message")[0].textContent);
 							connection.end();
 							return;
 						}
-						log("Obtenidos datos de la sala");
-						var modpasswd = sl[0].clave_moderador;
-						var sid = sl[0].id;
-						log("modpassword " + modpasswd);
-						callBBB("end", {
-							meetingID: id,
-							password: modpasswd
-						}, function(err, xml)
-						{
-							if(handleErrors(err))
-							{
-								res.status(500);
-								res.sendFile(__dirname + "/servererror.html");
-								return;
-							}
-							log("Intento de cerrarse con BBB");
-							var status = xml.getElementsByTagName("returncode");
-							if(status.length <= 0)
-							{
-								handleErrors(new Error("No se puede contactar correctamente con BigBlueButton"));
-								res.sendFile(__dirname + "/servererror.html");
-								return;
-							}
-							status = status[0].textContent;
-							log("Eliminada correctamente? " + status);
-							if(status == "FAILED")
-							{
-								var key = xml.getElementsByTagName("messageKey")[0].textContent;
-								if(key == "notFound")
-								{
-									log("Sala no existente: borrando para seguir ACID");
-									delete_in_error = true;
-								}
-							}
-							if((status == "SUCCESS") || delete_in_error)
-							{
-								log("Si, eliminando de la DB");
-								connection.query("UPDATE `usuarios` SET `sala` = 0 WHERE `sala` = ?", [sid], function(err, rows)
-								{
-									if(handleErrors(err))
-									{
-										res.status(500);
-										res.sendFile(__dirname + "/servererror.html");
-										return;
-									}
-									if(typeof rows === "undefined")
-									{
-										handleErrors(new Error("Unexpected query result null"));
-										res.status(500);
-										res.sendFile(__dirname + "/servererror.html");
-										connection.end();
-										return;
-									}
-									log("Actualizados los usuarios");
-									connection.query("DELETE FROM `salas` WHERE `bbbid` = ?", [id], function(err, rows)
-									{
-										if(handleErrors(err))
-										{
-											res.status(500);
-											res.sendFile(__dirname + "/servererror.html");
-											return;
-										}
-										if(typeof rows === "undefined")
-										{
-											handleErrors(new Error("Unexpected query result null"));
-											res.status(500);
-											res.sendFile(__dirname + "/servererror.html");
-											connection.end();
-											return;
-										}
-										log("Eliminada sala de la DB");
-										connection.end();
-										res.redirect("/managerooms");
-									});
-								});
-							}
-							else
-							{
-								res.redirect("/managerooms?errorBBB=" + xml.getElementsByTagName("message")[0].textContent);
-								connection.end();
-							}
-						});
+						connection.end();
+						res.redirect("/managerooms");
 					});
 				}
 				if(action == "new")

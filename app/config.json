@@ -18,5 +18,5 @@
 	"terminal": {
 		"ansicolor": false
 	},
-	"verbose": false
+	"verbose": true
 }
